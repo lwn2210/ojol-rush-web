@@ -61,6 +61,7 @@ export class App {
   private paused = false
   private resultAt = 0
   private lastOrderSecond = -1
+  private lastState: GameState | null = null
 
   constructor() {
     this.session = this.demo()
@@ -70,6 +71,7 @@ export class App {
 
     $('play').addEventListener('click', () => this.start())
     $('again').addEventListener('click', () => this.start())
+    $('share-score').addEventListener('click', () => this.shareResult())
     $('to-menu').addEventListener('click', () => this.toMenu())
     $('resume').addEventListener('click', () => this.setPaused(false))
     $('quit').addEventListener('click', () => this.toMenu())
@@ -296,6 +298,7 @@ export class App {
   }
 
   private showResult(state: GameState): void {
+    this.lastState = state
     const s = state.stats
     const r = rating(state)
     const frozen = state.endReason === 'rating'
@@ -325,5 +328,33 @@ export class App {
         : ''
     this.hud.hide()
     $('result').hidden = false
+  }
+
+  private shareResult(): void {
+    const state = this.lastState
+    if (!state) return
+    const s = state.stats
+    const r = rating(state)
+    const text =
+      `🛵 HASIL SHIFT DRIVER OJOL RUSH 🛵\n` +
+      `💰 Total Pendapatan: ${rupiah(s.earnings)}\n` +
+      `⭐ Rating Driver: ${ratingText(r)} / 5.0\n` +
+      `📦 Orderan Selesai: ${s.delivered} antaran\n` +
+      `🌟 Bintang 5 Sempurna: ${s.perfect}\n` +
+      `💥 Nabrak: ${s.crashes}x · Kena Razia: ${s.raziaHits}x\n\n` +
+      `Bisa lebih lincah tembus macet Jakarta? Mainkan gratis di:\n` +
+      `👉 https://lwn2210.github.io/mini-arcade/ojol-rush/`
+
+    const btn = $('share-score')
+    if (navigator.share) {
+      navigator.share({ title: 'Hasil Shift Ojol Rush!', text, url: 'https://lwn2210.github.io/mini-arcade/ojol-rush/' }).catch(() => {})
+    } else {
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✓ Hasil Shift Disalin!'
+        setTimeout(() => { btn.textContent = '📤 Pamer Hasil Shift (WhatsApp/Medsos)' }, 2000)
+      }).catch(() => {
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank')
+      })
+    }
   }
 }
