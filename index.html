@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#3d6b62" />
+    <title>Ojol Rush</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;800&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="scene"></canvas>
+
+      <div id="hud" hidden>
+        <div class="top">
+          <div class="card"><span class="label">Pendapatan</span><b id="earn">Rp 0</b></div>
+          <div class="card mid"><span class="label">Shift</span><b id="clock">3:00</b></div>
+          <div class="card right"><span class="label">Rating</span><b id="rating">★ 5,00</b></div>
+        </div>
+
+        <div class="order" id="order">
+          <span class="chip" id="order-chip">Nyari</span>
+          <div class="order-main">
+            <b id="order-name">Nyari orderan…</b>
+            <span id="order-info">Tunggu bentar, aplikasi lagi muter</span>
+          </div>
+          <b class="order-time" id="order-time"></b>
+          <div class="bar"><div id="order-bar"></div></div>
+        </div>
+
+        <canvas id="minimap" aria-hidden="true"></canvas>
+
+        <div id="banner" class="banner"><b id="banner-main"></b><span id="banner-sub"></span></div>
+
+        <div class="hint" id="keys-hint"><kbd>WASD</kbd>/<kbd>panah</kbd> setir · <kbd>Spasi</kbd> klakson · <kbd>P</kbd> jeda</div>
+
+        <div id="stick" class="stick" hidden><div id="knob"></div></div>
+        <button id="btn-horn" class="horn" aria-label="Klakson">Tin!</button>
+      </div>
+
+      <div class="corner">
+        <button id="pause" class="round" aria-label="Jeda" hidden>⏸</button>
+        <button id="mute" class="round" aria-label="Suara nyala/mati">🔊</button>
+      </div>
+
+      <div id="menu" class="overlay">
+        <div class="panel">
+          <canvas id="logo" class="logo" width="160" height="160" aria-hidden="true"></canvas>
+          <h1>Ojol Rush</h1>
+          <p class="tagline">Narik orderan di gang-gang Jakarta. Jemput, antar, kejar bintang lima!</p>
+          <p class="best" id="menu-best">Belum ada rekor. Gas!</p>
+          <button id="play" class="btn">Mulai Shift</button>
+          <details class="how">
+            <summary>Cara main</summary>
+            <ul>
+              <li><b>Setir</b>: WASD/panah, atau tahan jempol di layar terus geser ke arah tujuan.</li>
+              <li>Orderan masuk sendiri. Ikutin garis rute: <b class="o">oranye</b> = jemput di warung, <b class="g">hijau</b> = antar ke pelanggan.</li>
+              <li><b>Berhenti di pin</b> sampai lingkarannya penuh buat ambil atau serahin pesanan.</li>
+              <li>Bintang berkurang kalau <b>nabrak</b> (mobil, angkot, bajaj, gerobak, tembok), ngebut di <b>polisi tidur</b> pas bawa makanan, atau sampainya <b>mepet</b>.</li>
+              <li><b>Genangan</b> bikin lambat. <b>Razia</b> (titik merah di peta kecil) nahan kamu 4 detik, mending muter lewat gang.</li>
+              <li>Shift 3 menit. Rating di bawah 3,5 = akun dibekukan, shift selesai.</li>
+              <li><kbd>Spasi</kbd> / tombol Tin! = klakson · <kbd>M</kbd> = suara · <kbd>P</kbd> = jeda</li>
+            </ul>
+          </details>
+        </div>
+      </div>
+
+      <div id="paused" class="overlay" hidden>
+        <div class="panel">
+          <h2>Ngopi dulu</h2>
+          <p class="tagline">Shift-nya dijeda. Orderan nunggu kok.</p>
+          <button id="resume" class="btn">Lanjut narik</button>
+          <button id="quit" class="btn ghost">Udahan</button>
+        </div>
+      </div>
+
+      <div id="result" class="overlay" hidden>
+        <div class="panel">
+          <h2 id="result-title">Shift beres!</h2>
+          <p class="tagline" id="result-sub"></p>
+          <p class="money" id="result-earn">Rp 0</p>
+          <p class="record" id="result-record" hidden>Rekor baru!</p>
+          <div class="stats">
+            <div><b id="r-delivered">0</b><span>Antaran</span></div>
+            <div><b id="r-rating">5,00</b><span>Rating</span></div>
+            <div><b id="r-perfect">0</b><span>Bintang 5</span></div>
+            <div><b id="r-cancelled">0</b><span>Cancel</span></div>
+            <div><b id="r-crashes">0</b><span>Nabrak</span></div>
+            <div><b id="r-razia">0</b><span>Kena razia</span></div>
+          </div>
+          <p class="best" id="result-best"></p>
+          <button id="again" class="btn">Narik lagi</button>
+          <button id="to-menu" class="btn ghost">Menu</button>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
