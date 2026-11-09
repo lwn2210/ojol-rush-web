@@ -602,3 +602,39 @@ b.g {
   font-weight: 800;
   color: var(--ink-soft);
 }
+
+.section-label {
+  font-weight: 800;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+  margin-top: 10px;
+  margin-bottom: 6px;
+}
+
+.seg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: var(--shade);
+  border-radius: 99px;
+  padding: 3px;
+  margin-bottom: 14px;
+}
+
+.seg button {
+  font-weight: 800;
+  font-size: 13px;
+  border: 0;
+  background: transparent;
+  border-radius: 99px;
+  padding: 8px 4px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.seg button.on {
+  background: var(--brand);
+  color: #fff;
+}

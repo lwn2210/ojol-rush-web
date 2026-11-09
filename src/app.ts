@@ -4,7 +4,7 @@ import { LocalInput } from './input'
 import { drawMotor } from './render/sprites'
 import { View, type Pose } from './render/view'
 import { Autopilot } from './sim/autopilot'
-import { DT, HURRY_TICKS, SHIFT_TICKS, TICK_RATE } from './sim/constants'
+import { BIKE_PROFILES, type BikeType, DT, HURRY_TICKS, SHIFT_TICKS, TICK_RATE } from './sim/constants'
 import { createGame, rating, step, type GameState, type SimEvent } from './sim/game'
 
 // Menu (an autopilot demo rides behind it) → shift → result. The sim runs
@@ -62,12 +62,21 @@ export class App {
   private resultAt = 0
   private lastOrderSecond = -1
   private lastState: GameState | null = null
+  private selectedBike: BikeType = 'matic'
 
   constructor() {
     this.session = this.demo()
     this.capture()
     window.addEventListener('resize', () => this.resize())
     this.resize()
+
+    const picks = $('bike-picks')
+    picks.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLElement>('button')
+      if (!btn) return
+      this.selectedBike = (btn.dataset.bike as BikeType) || 'matic'
+      picks.querySelectorAll('button').forEach((b) => b.classList.toggle('on', b === btn))
+    })
 
     $('play').addEventListener('click', () => this.start())
     $('again').addEventListener('click', () => this.start())
@@ -102,7 +111,7 @@ export class App {
   }
 
   private start(): void {
-    const state = createGame(newSeed())
+    const state = createGame(newSeed(), { bike: this.selectedBike })
     this.session = { state, live: true, bot: null }
     this.capture()
     this.view.setMap(state.map)
@@ -335,8 +344,10 @@ export class App {
     if (!state) return
     const s = state.stats
     const r = rating(state)
+    const bikeName = BIKE_PROFILES[state.opts.bike ?? 'matic'].name
     const text =
       `🛵 HASIL SHIFT DRIVER OJOL RUSH 🛵\n` +
+      `🏍️ Kendaraan: ${bikeName}\n` +
       `💰 Total Pendapatan: ${rupiah(s.earnings)}\n` +
       `⭐ Rating Driver: ${ratingText(r)} / 5.0\n` +
       `📦 Orderan Selesai: ${s.delivered} antaran\n` +

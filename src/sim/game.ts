@@ -1,5 +1,7 @@
 import {
   ACCEL,
+  BIKE_PROFILES,
+  type BikeType,
   BLOCKS,
   BRAKE,
   BUMP_SAFE,
@@ -141,6 +143,7 @@ export interface TripResult {
 export interface GameOptions {
   traffic: boolean
   razia: boolean
+  bike?: BikeType
 }
 
 export interface GameState {
@@ -370,6 +373,12 @@ function stepPlayer(state: GameState, input: Input, events: SimEvent[]): void {
   const m = Math.min(1, Math.hypot(ix, iy))
   let target = 0
   let steering = false
+  const bike = BIKE_PROFILES[state.opts.bike ?? 'matic']
+  const maxSpeed = bike.maxSpeed
+  const accel = bike.accel
+  const turnRate = bike.turnRate
+  const waterFactor = bike.waterFactor
+
   if (p.held > 0) {
     p.held--
     p.speed = 0
@@ -383,14 +392,14 @@ function stepPlayer(state: GameState, input: Input, events: SimEvent[]): void {
     steering = true
     const want = Math.atan2(iy, ix)
     const diff = wrapAngle(want - p.heading)
-    const rate = TURN_RATE * (1.3 - 0.6 * Math.min(1, p.speed / MAX_SPEED))
+    const rate = turnRate * (1.3 - 0.6 * Math.min(1, p.speed / maxSpeed))
     p.heading = wrapAngle(p.heading + clamp(diff, -rate * DT, rate * DT))
-    target = MAX_SPEED * (wet ? WATER_FACTOR : 1) * Math.min(1, m / 0.85)
+    target = maxSpeed * (wet ? waterFactor : 1) * Math.min(1, m / 0.85)
     // Pointing back the way you came: brake and swing round.
     if (Math.abs(diff) > 1.9) target *= 0.3
   }
-  if (p.speed < target) p.speed = Math.min(target, p.speed + ACCEL * DT)
-  else p.speed = Math.max(target, p.speed - (steering || p.speed > MAX_SPEED * WATER_FACTOR ? BRAKE : COAST) * DT)
+  if (p.speed < target) p.speed = Math.min(target, p.speed + accel * DT)
+  else p.speed = Math.max(target, p.speed - (steering || p.speed > maxSpeed * waterFactor ? BRAKE : COAST) * DT)
   p.kx *= 0.86
   p.ky *= 0.86
   if (Math.abs(p.kx) < 0.01) p.kx = 0
@@ -775,7 +784,8 @@ function stepOrder(state: GameState, events: SimEvent[]): void {
     return
   }
   const { stars, mepet } = starsFor(o)
-  const tip = stars === 5 ? 2000 + 500 * randInt(state, 0, 6) : 0
+  const bonusTip = stars === 5 ? (BIKE_PROFILES[state.opts.bike ?? 'matic']?.tipBonus ?? 0) : 0
+  const tip = stars === 5 ? 2000 + 500 * randInt(state, 0, 6) + bonusTip : 0
   const result: TripResult = { stars, fare: o.fare, tip, crashes: o.crashes, spills: o.spills, mepet, cancelled: false }
   state.stats.delivered++
   state.stats.earnings += o.fare + tip

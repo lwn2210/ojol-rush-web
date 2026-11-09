@@ -32,6 +32,13 @@ export const FARE_PER_TILE = 350
 export const MEPET = 0.2 // less than this share of time left = mepet, −1 star
 
 // Motor.
+export type BikeType = 'matic' | 'bebek' | 'maxi'
+export const BIKE_PROFILES: Record<BikeType, { name: string; maxSpeed: number; accel: number; turnRate: number; waterFactor: number; tipBonus: number }> = {
+  matic: { name: 'Matic Gesit', maxSpeed: 7.5, accel: 8.5, turnRate: 6.5, waterFactor: 0.45, tipBonus: 0 },
+  bebek: { name: 'Bebek Badak', maxSpeed: 7.0, accel: 7.5, turnRate: 5.8, waterFactor: 0.80, tipBonus: 0 },
+  maxi: { name: 'Maxi 155cc', maxSpeed: 8.6, accel: 9.5, turnRate: 5.2, waterFactor: 0.40, tipBonus: 1000 },
+}
+
 export const RIDER_R = 0.26
 export const MAX_SPEED = 7.5
 export const ACCEL = 8.5
