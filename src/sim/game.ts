@@ -1,5 +1,4 @@
 import {
-  ACCEL,
   BIKE_PROFILES,
   type BikeType,
   BLOCKS,
@@ -17,7 +16,6 @@ import {
   FARE_PER_TILE,
   HURRY_TICKS,
   MAP_SIZE,
-  MAX_SPEED,
   MEPET,
   NEXT_ORDER_TICKS,
   ORDER_MAX_TRIP,
@@ -39,10 +37,8 @@ import {
   SHIFT_TICKS,
   STUN_TICKS,
   TICK_RATE,
-  TURN_RATE,
   VEHICLES,
   WALL_CRASH,
-  WATER_FACTOR,
   type VehicleKind,
 } from './constants'
 import { distanceField, drivable, generateMap, isRoadLine, type CityMap, type Dir, type Place } from './map'
